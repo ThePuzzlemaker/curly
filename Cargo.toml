@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+  "testing",
+  "curly",
+  "curly_derive"
+]

@@ -1,0 +1,17 @@
+[package]
+name = "curly_derive"
+version = "0.0.1"
+authors = ["ThePuzzlemaker <tpzker@thepuzzlemaker.info>"]
+edition = "2018"
+description = "Type-safe runtime text formatting for humans. (#[derive] extension)"
+homepage = "https://github.com/ThePuzzlemaker/curly.git"
+repository = "https://github.com/ThePuzzlemaker/curly.git"
+license = "MIT"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
+curly = { path = "../curly", version = "^0" }

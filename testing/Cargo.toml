@@ -1,0 +1,12 @@
+[package]
+name = "testing"
+version = "0.1.0"
+authors = ["ThePuzzlemaker <tpzker@thepuzzlemaker.info>"]
+edition = "2018"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+curly = { path = "../curly" }
+curly_derive = { path = "../curly_derive" }
