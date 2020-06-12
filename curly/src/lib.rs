@@ -35,7 +35,7 @@ macro_rules! curly {
             delegate_provider: $delegate_provider
         };
     }};
-    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:expr), *,) => {{
         use ::curly::formatters::*;
         use ::curly::*;
         use ::curly::formatters::CurlyFormattable;
@@ -63,7 +63,7 @@ macro_rules! curly {
             )*
         };
     }};
-    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *) => {{
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:expr), *) => {{
         curly!($format_string, $($argument_name: $argument_type = $argument_value, )*)
     }}
 }
