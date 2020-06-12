@@ -47,7 +47,7 @@ impl CurlyFormatter {
         let mut specifier: Option<String> = None;
         let mut postfixes: Option<String> = None;
         lazy_static! {
-            static ref RE: Regex = Regex::new("\\{\\{((([A-Za-z0-9~!@#%^&$*()_+\\-=;'\",.<>/?]+)[:]{1})?)([A-Za-z0-9_\\-=+.]+)(([/]{1}([A-Za-z0-9~!@#%^&$*()_+\\-=;:'\",.<>/?]+))?)\\}\\}").expect("Failed to compile regex");
+            static ref RE: Regex = Regex::new("\\{\\{((([A-Za-z0-9~!@#%^&$*()_+\\-=;'\",.<>/?]+)[:]{1})?)([A-Za-z0-9_.]+)(([/]{1}([A-Za-z0-9~!@#%^&$*()_+\\-=;:'\",.<>/?]+))?)\\}\\}").expect("Failed to compile regex");
         }
         for cap in RE.captures_iter(format_segment) {
             prefixes = cap.get(3).map(|p| p.as_str().to_string());
