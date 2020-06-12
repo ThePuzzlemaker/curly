@@ -9,7 +9,7 @@ pub use error::*;
 // TODO: actual formatting
 #[macro_export]
 macro_rules! curly {
-    ($format_string:ident, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *, ..$delegate_provider:ident: $delegate_type:ty) => {{
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:expr), *, ..$delegate_provider:ident: $delegate_type:ty) => {{
         use ::curly::formatters::CurlyFormattable;
         use ::curly::formatters::PostFormattable;
         struct CurlyArgumentsInternal {
@@ -35,7 +35,7 @@ macro_rules! curly {
             delegate_provider: $delegate_provider
         };
     }};
-    ($format_string:ident, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
         use ::curly::formatters::*;
         use ::curly::*;
         use ::curly::formatters::CurlyFormattable;
@@ -63,23 +63,8 @@ macro_rules! curly {
             )*
         };
     }};
-    ($format_string:ident, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *) => {{
-        curly!($format_string, $($argument_name: $argument_type = $argument_value, )*)
-    }}
-}
-
-#[macro_export]
-macro_rules! curly_static {
-    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *, ..$delegate_provider:ident: $delegate_type:ty) => {{
-        let format_string = $format_string;
-        curly!(format_string, $($argument_name: $argument_type = $argument_value, )* ..$delegate_provider: $delegate_type);
-    }};
-    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
-        let format_string = $format_string;
-        curly!(format_string, $($argument_name: $argument_type = $argument_value, )*)
-    }};
     ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *) => {{
-        curly_static!($format_string, $($argument_name: $argument_type = $argument_value, )*)
+        curly!($format_string, $($argument_name: $argument_type = $argument_value, )*)
     }}
 }
 

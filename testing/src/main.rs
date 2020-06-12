@@ -14,8 +14,8 @@ fn main() {
     let fmt = "{{!q:value/!}}";
     let data = SomeData { value2: false };
     let value3: bool = false;
-    curly_static!(
-        "{{!q:value/!}}",
+    curly!(
+        fmt,
         value: bool = false,
         value3: bool = value3,
         ..data: SomeData
