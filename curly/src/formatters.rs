@@ -24,10 +24,25 @@ impl CurlyFormatter {
         }
     }
 
+    pub fn to_segment(&self) -> String {
+        let prefixes = self
+            .prefixes
+            .clone()
+            .map(|p| format!("{}:", p))
+            .unwrap_or(String::new());
+        let specifier = self.specifier.clone().unwrap_or("undefined_specifier".to_string());
+        let postfixes = self
+            .postfixes
+            .clone()
+            .map(|p| format!("/{}", p))
+            .unwrap_or(String::new());
+        format!("{{{{{}{}{}}}}}", prefixes, specifier, postfixes)
+    }
+
     /// Generate a `CurlyFormatter` from a single format segment (one statement between `{{}}`s)
     ///
     /// This function does not validate input, as that is done by // TODO: input parsing
-    pub(crate) fn from_segment(format_segment: &str) -> Result<CurlyFormatter, CurlyErrorKind> {
+    pub fn from_segment(format_segment: &str) -> Result<CurlyFormatter, CurlyErrorKind> {
         let mut prefixes: Option<String> = None;
         let mut specifier: Option<String> = None;
         let mut postfixes: Option<String> = None;
@@ -56,7 +71,83 @@ impl CurlyFormatter {
 }
 
 pub trait CurlyFormattable {
-    fn curly_format(&self, formatter: &CurlyFormatter) -> Result<String, CurlyError>;
+    fn curly_format(&self, formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind>;
+}
+
+impl CurlyFormattable for String {
+    fn curly_format(&self, _formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind> {
+        Ok(self.clone())
+    }
+}
+
+impl CurlyFormattable for str {
+    fn curly_format(&self, _formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind> {
+        Ok(self.to_string())
+    }
+}
+
+impl CurlyFormattable for bool {
+    fn curly_format(&self, formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind> {
+        if let Some(prefixes) = &formatter.prefixes {
+            let mut yesno = false;
+            let mut invert = false;
+            for ch in prefixes.chars() {
+                if ch == 'q' || ch == 'Q' {
+                    yesno = true;
+                } else if ch == '!' {
+                    invert = true;
+                } else {
+                    return Err(CurlyErrorKind::Syntax(CurlyError::from(format!(
+                        "Syntax error: invalid prefix character '{}' at '{}'",
+                        ch,
+                        formatter.to_segment()
+                    ))));
+                }
+            }
+            let mut val = self.clone();
+            if invert {
+                val = !val;
+            }
+            if yesno {
+                return Ok(if val { "yes" } else { "no" }.to_string());
+            }
+            return Ok(val.to_string());
+        }
+        Ok(self.to_string())
+    }
+}
+
+// PLEASE DO NOT IMPLEMENT - Used for post-formatting
+pub trait PostFormattable {
+    fn curly_post(&self, formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind>;
+}
+
+impl PostFormattable for String {
+    fn curly_post(&self, formatter: &CurlyFormatter) -> Result<String, CurlyErrorKind> {
+        if let Some(postfixes) = &formatter.postfixes {
+            let mut result = self.clone();
+
+            result = match postfixes.chars().next().unwrap() {
+                '^' => result.to_uppercase(),
+                '_' => result.to_lowercase(),
+                '!' => result
+                    .chars()
+                    .enumerate()
+                    .map(|(idx, ch)| {
+                        if idx == 0 {
+                            ch.to_uppercase().to_string()
+                        } else {
+                            ch.to_string()
+                        }
+                    })
+                    .collect(),
+                _ => result,
+            };
+            Ok(result)
+        } else {
+            Ok(self.clone())
+        }
+    }
 }
 
 #[cfg(test)]
@@ -95,16 +186,5 @@ mod tests {
         };
         let got = CurlyFormatter::from_segment("{{specifier/postfixes}}").unwrap();
         assert_eq!(expected, got);
-    }
-}
-
-// PLEASE DO NOT IMPLEMENT - Used for post-formatting
-pub trait PostFormattable {
-    fn curly_post(&self, formatter: &CurlyFormatter) -> Result<String, CurlyError>;
-}
-
-impl PostFormattable for String {
-    fn curly_post(&self, formatter: &CurlyFormatter) -> Result<String, CurlyError> {
-        Ok(String::new())
     }
 }

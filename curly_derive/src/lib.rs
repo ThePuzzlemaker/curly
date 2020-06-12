@@ -1,4 +1,5 @@
 extern crate proc_macro;
+extern crate proc_macro2;
 
 use proc_macro::TokenStream;
 use quote::quote;
@@ -26,7 +27,7 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
             for field in fields.named.iter() {
                 if let Some(field_name) = &field.ident {
                     let quoted = quote! {
-                        stringify!(#field_name) => Some(self.#field_name.curly_format(formatter).post_format(formatter)),
+                        stringify!(#field_name) => self.#field_name.curly_format(formatter)?.curly_post(formatter),
                     };
                     matches.extend(quoted);
                 }
@@ -43,17 +44,23 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
             }*/
             panic!("Sorry, as of now, Provider derivation does not work on tuple-style structs.")
         }
+        let span = proc_macro2::Span::call_site();
+        let modname =
+            proc_macro2::Ident::new(&format!("__curly_internal_provider_implfor_{}", name), span);
         gen = quote! {
-            use ::curly::formatters::CurlyFormattable;
-            use ::curly::formatters::PostFormattable;
-            impl #impl_generics ::curly::Provider for #name #ty_generics #where_clause {
-                fn provide(&self, formatter: ::curly::formatters::CurlyFormatter, key: &str) -> ::std::result::Result<::std::string::String, ::curly::CurlyErrorKind> {
-                    match key {
-                        #matches
-                        _ => ::std::result::Result::Err(::curly::CurlyErrorKind::Generic(::curly::CurlyError::from("Invalid key".to_string())))
+            mod #modname {
+                use ::curly::formatters::CurlyFormattable;
+                use ::curly::formatters::PostFormattable;
+                impl #impl_generics ::curly::Provider for super::#name #ty_generics #where_clause {
+                    fn provide(&self, formatter: &::curly::formatters::CurlyFormatter, key: &str) -> ::std::result::Result<::std::string::String, ::curly::CurlyErrorKind> {
+                        match key {
+                            #matches
+                            _ => ::std::result::Result::Err(::curly::CurlyErrorKind::Generic(::curly::CurlyError::from("Invalid key".to_string())))
+                        }
                     }
                 }
-            }
+            };
+
         };
     } else {
         panic!("Sorry, as of now, Provider derivation only works on structs");

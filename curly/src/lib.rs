@@ -9,13 +9,13 @@ pub use error::*;
 pub trait Provider {
     fn provide(
         &self,
-        formatter: formatters::CurlyFormatter,
+        formatter: &formatters::CurlyFormatter,
         key: &str,
     ) -> Result<String, CurlyErrorKind>;
     fn delegate(
         &self,
         provider: Box<dyn Provider>,
-        formatter: formatters::CurlyFormatter,
+        formatter: &formatters::CurlyFormatter,
         key: &str,
     ) -> Result<String, CurlyErrorKind> {
         provider.provide(formatter, key)
