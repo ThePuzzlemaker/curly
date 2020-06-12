@@ -16,3 +16,4 @@ syn = "1.0.31"
 quote = "1.0.7"
 curly = { path = "../curly", version = "^0" }
 proc-macro2 = "1.0" 
+proc-macro-crate = "0.1.4"

@@ -6,8 +6,6 @@ use quote::quote;
 use syn::Data;
 use syn::Fields;
 
-#[allow(unused_imports)]
-use curly::Provider;
 
 #[proc_macro_derive(Provider)]
 pub fn provider_derive(input: TokenStream) -> TokenStream {
@@ -20,6 +18,8 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
     let gen;
     if let Data::Struct(data) = &ast.data {
         let name = &ast.ident;
+        let crate_name = proc_macro_crate::crate_name("curly").expect("Failed to find curly in `Cargo.toml`");
+        let crate_name_ident = syn::Ident::new(&crate_name, proc_macro2::Span::call_site());
         let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
         let mut matches = quote! {};
         let struct_fields = &data.fields;
@@ -50,13 +50,14 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
             proc_macro2::Ident::new(&format!("__curly_internal_provider_implfor_{}", name), span);
         gen = quote! {
             mod #modname {
-                use ::curly::formatters::CurlyFormattable;
-                use ::curly::formatters::PostFormattable;
-                impl #impl_generics ::curly::Provider for super::#name #ty_generics #where_clause {
-                    fn provide(&self, formatter: &::curly::formatters::CurlyFormatter, key: &str) -> ::std::result::Result<::std::string::String, ::curly::CurlyErrorKind> {
+                extern crate #crate_name_ident as curly;
+                use curly::formatters::CurlyFormattable;
+                use curly::formatters::PostFormattable;
+                impl #impl_generics curly::Provider for super::#name #ty_generics #where_clause {
+                    fn provide(&self, formatter: &curly::formatters::CurlyFormatter, key: &str) -> ::std::result::Result<::std::string::String, curly::CurlyErrorKind> {
                         match key {
                             #matches
-                            _ => ::std::result::Result::Err(::curly::CurlyErrorKind::Generic(::curly::CurlyError::from("Invalid key".to_string())))
+                            _ => ::std::result::Result::Err(curly::CurlyErrorKind::Generic(curly::CurlyError::from("Invalid key".to_string())))
                         }
                     }
                 }

@@ -2,9 +2,7 @@
 extern crate curly_derive;
 
 #[macro_use]
-extern crate curly;
-
-use curly::Provider;
+extern crate newcurly;
 #[derive(Provider)]
 struct SomeData {
     value2: bool,
