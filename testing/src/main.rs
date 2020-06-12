@@ -12,11 +12,14 @@ struct SomeData {
 
 fn main() {
     let fmt = "{{!q:value/!}}";
-    let data = SomeData {
-        value2: false
-    };
+    let data = SomeData { value2: false };
     let value3: bool = false;
-    curly!(fmt, value: bool = false, value3: bool = value3, ..data: SomeData);
+    curly!(
+        fmt,
+        value: bool = false,
+        value3: bool = value3,
+        ..data: SomeData
+    );
     // let formatter = curly::formatters::CurlyFormatter::from_segment("{{!q:value/!}}").unwrap();
     // let data = SomeData {
     //     value: false,

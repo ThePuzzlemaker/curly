@@ -30,7 +30,10 @@ impl CurlyFormatter {
             .clone()
             .map(|p| format!("{}:", p))
             .unwrap_or(String::new());
-        let specifier = self.specifier.clone().unwrap_or("undefined_specifier".to_string());
+        let specifier = self
+            .specifier
+            .clone()
+            .unwrap_or("undefined_specifier".to_string());
         let postfixes = self
             .postfixes
             .clone()
