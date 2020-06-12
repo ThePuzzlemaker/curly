@@ -67,6 +67,22 @@ macro_rules! curly {
         curly!($format_string, $($argument_name: $argument_type = $argument_value, )*)
     }}
 }
+
+#[macro_export]
+macro_rules! curly_static {
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *, ..$delegate_provider:ident: $delegate_type:ty) => {{
+        let format_string = $format_string;
+        curly!(format_string, $($argument_name: $argument_type = $argument_value, )* ..$delegate_provider: $delegate_type);
+    }};
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
+        let format_string = $format_string;
+        curly!(format_string, $($argument_name: $argument_type = $argument_value, )*)
+    }};
+    ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *) => {{
+        curly_static!($format_string, $($argument_name: $argument_type = $argument_value, )*)
+    }}
+}
+
 pub trait Provider {
     fn provide(
         &self,
