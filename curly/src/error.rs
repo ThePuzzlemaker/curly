@@ -7,8 +7,14 @@ pub enum CurlyErrorKind {
 impl std::fmt::Display for CurlyErrorKind {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         match self {
-            CurlyErrorKind::Generic(e) => e.fmt(fmt),
-            CurlyErrorKind::Syntax(e) => e.fmt(fmt),
+            CurlyErrorKind::Generic(e) => {
+                fmt.write_str("Error: ")?;
+                e.fmt(fmt)
+            },
+            CurlyErrorKind::Syntax(e) => {
+                fmt.write_str("Syntax Error: ")?;
+                e.fmt(fmt)
+            },
         }
     }
 }

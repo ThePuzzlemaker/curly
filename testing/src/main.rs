@@ -10,15 +10,8 @@ struct SomeData {
 
 fn main() {
     let fmt = "{{!q:value/!}}";
-    let data = SomeData { value2: false };
-    let value3: bool = false;
-    curly!(
-        fmt,
-        value: bool = false,
-        value3: bool = value3,
-        ..data: SomeData
-    );
-
+    let fmter = newcurly::formatters::CurlyFormatter::from_segment(fmt, 0, 0)
+        .expect("failed to get formatter from segment");
     // let formatter = curly::formatters::CurlyFormatter::from_segment("{{!q:value/!}}").unwrap();
     // let data = SomeData {
     //     value: false,

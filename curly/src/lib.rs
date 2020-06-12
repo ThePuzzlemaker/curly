@@ -3,8 +3,10 @@ extern crate lazy_static;
 
 pub mod error;
 pub mod formatters;
+pub mod parsing;
 
 pub use error::*;
+
 
 // TODO: actual formatting
 #[macro_export]
