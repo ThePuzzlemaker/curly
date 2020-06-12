@@ -33,7 +33,8 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
                 }
             }
         } else if let Fields::Unnamed(_fields) = struct_fields {
-            // This code is currently commented out, as unnamed fields are a giant headache when doing curly formatting.
+            // This code is currently commented out, as unnamed fields are a giant headache when doing curly formatting,
+            // as they may not make general sense.
             // Please use named fields.
             /*for (raw_index, _field) in fields.unnamed.iter().enumerate() {
                 let index = syn::Index::from(raw_index);

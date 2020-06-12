@@ -20,6 +20,7 @@ fn main() {
         value3: bool = value3,
         ..data: SomeData
     );
+
     // let formatter = curly::formatters::CurlyFormatter::from_segment("{{!q:value/!}}").unwrap();
     // let data = SomeData {
     //     value: false,

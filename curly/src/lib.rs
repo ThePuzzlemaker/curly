@@ -35,7 +35,7 @@ macro_rules! curly {
             delegate_provider: $delegate_provider
         };
     }};
-    ($format_string:ident, $($argument_name:ident = $argument_value:tt), *,) => {{
+    ($format_string:ident, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *,) => {{
         use ::curly::formatters::*;
         use ::curly::*;
         use ::curly::formatters::CurlyFormattable;
@@ -46,7 +46,9 @@ macro_rules! curly {
             )*
         }
         impl ::curly::Provider for CurlyArgumentsInternal {
-            fn provide (&self, formatter: &::curly::formatters::CurlyFormatter, key: &str) -> Result<::std::string::String, ::curly::CurlyErrorKind> {
+            fn provide (&self,
+                        formatter: &::curly::formatters::CurlyFormatter,
+                        key: &str) -> Result<::std::string::String, ::curly::CurlyErrorKind> {
                 match key {
                     $(
                         stringify!($argument_name) => self.$argument_name.curly_format(formatter)?.curly_post(formatter),
@@ -61,31 +63,8 @@ macro_rules! curly {
             )*
         };
     }};
-    ($format_string:ident, $($argument_name:ident = $argument_value:tt), *) => {{
-        use ::curly::formatters::*;
-        use ::curly::*;
-        use ::curly::formatters::CurlyFormattable;
-        use ::curly::formatters::PostFormattable;
-        struct CurlyArgumentsInternal {
-            $(
-                $argument_name: $argument_type,
-            )*
-        }
-        impl ::curly::Provider for CurlyArgumentsInternal {
-            fn provide (&self, formatter: &::curly::formatters::CurlyFormatter, key: &str) -> Result<::std::string::String, ::curly::CurlyErrorKind> {
-                match key {
-                    $(
-                        stringify!($argument_name) => self.$argument_name.curly_format(formatter)?.curly_post(formatter),
-                    )*
-                    _ => ::std::result::Result::Err(::curly::CurlyErrorKind::Generic(::curly::CurlyError::from("Invalid key".to_string())))
-                }
-            }
-        }
-        let arguments = CurlyArgumentsInternal {
-            $(
-                $argument_name: $argument_value,
-            )*
-        };
+    ($format_string:ident, $($argument_name:ident: $argument_type:ty = $argument_value:tt), *) => {{
+        curly!($format_string, $($argument_name: $argument_type = $argument_value, )*)
     }}
 }
 pub trait Provider {
