@@ -7,7 +7,6 @@ pub mod parsing;
 
 pub use error::*;
 
-
 // TODO: actual formatting
 #[macro_export]
 macro_rules! curly {
@@ -55,7 +54,7 @@ macro_rules! curly {
                     $(
                         stringify!($argument_name) => self.$argument_name.curly_format(formatter)?.curly_post(formatter),
                     )*
-                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from("Invalid key".to_string())))
+                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from(format!("Invalid specifier '{}'", key))))
                 }
             }
         }

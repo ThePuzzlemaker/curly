@@ -10,11 +10,11 @@ impl std::fmt::Display for CurlyErrorKind {
             CurlyErrorKind::Generic(e) => {
                 fmt.write_str("Error: ")?;
                 e.fmt(fmt)
-            },
+            }
             CurlyErrorKind::Syntax(e) => {
                 fmt.write_str("Syntax Error: ")?;
                 e.fmt(fmt)
-            },
+            }
         }
     }
 }

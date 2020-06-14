@@ -6,7 +6,6 @@ use quote::quote;
 use syn::Data;
 use syn::Fields;
 
-
 #[proc_macro_derive(Provider)]
 pub fn provider_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
@@ -18,7 +17,8 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
     let gen;
     if let Data::Struct(data) = &ast.data {
         let name = &ast.ident;
-        let crate_name = proc_macro_crate::crate_name("curly").expect("Failed to find curly in `Cargo.toml`");
+        let crate_name =
+            proc_macro_crate::crate_name("curly").expect("Failed to find curly in `Cargo.toml`");
         let crate_name_ident = syn::Ident::new(&crate_name, proc_macro2::Span::call_site());
         let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
         let mut matches = quote! {};
@@ -57,7 +57,7 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
                     fn provide(&self, formatter: &curly::formatters::CurlyFormatter, key: &str) -> ::std::result::Result<::std::string::String, curly::CurlyErrorKind> {
                         match key {
                             #matches
-                            _ => ::std::result::Result::Err(curly::CurlyErrorKind::Generic(curly::CurlyError::from("Invalid key".to_string())))
+                            _ => ::std::result::Result::Err(curly::CurlyErrorKind::Generic(curly::CurlyError::from(format!("Invalid specifier '{}'", key))))
                         }
                     }
                 }

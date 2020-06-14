@@ -8,20 +8,20 @@ pub struct CurlyFormatter {
     pub(crate) preflags: Option<Vec<CurlyPreFlags>>,
     pub(crate) specifier: Option<String>,
     pub(crate) postfixes: Option<String>,
-    pub(crate) postflags: Option<Vec<CurlyPostFlags>>
+    pub(crate) postflags: Option<Vec<CurlyPostFlags>>,
 }
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum NumeralSign {
-    Plus, // '+'
-    Minus // '-'
+    Plus,  // '+'
+    Minus, // '-'
 }
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum Alignment {
     Left,   // '<'
     Center, // '^'
-    Right   // '>'
+    Right,  // '>'
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -41,8 +41,8 @@ pub enum CurlyPreFlags {
     Debug,
     // '0'
     Zero,
-    // '$' 
-    Plurality
+    // '$'
+    Plurality,
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -58,7 +58,7 @@ pub enum CurlyPostFlags {
     // '_'
     ToLower,
     // '-'
-    ToCapital
+    ToCapital,
 }
 
 impl CurlyFormatter {
@@ -97,7 +97,11 @@ impl CurlyFormatter {
     /// Generate a `CurlyFormatter` from a single format segment (one statement between `{{}}`s)
     ///
     /// This function does not validate input YET, as that is done by // TODO: input parsing
-    pub fn from_segment(format_segment: &str, startRow: usize, startCol: usize) -> Result<CurlyFormatter, CurlyErrorKind> {
+    pub fn from_segment(
+        format_segment: &str,
+        base_row: usize,
+        base_col: usize,
+    ) -> Result<CurlyFormatter, CurlyErrorKind> {
         let mut prefixes: Option<String> = None;
         let mut specifier: Option<String> = None;
         let mut postfixes: Option<String> = None;
@@ -114,7 +118,7 @@ impl CurlyFormatter {
             specifier,
             postfixes,
             preflags: None,
-            postflags: None
+            postflags: None,
         })
     }
 
@@ -124,7 +128,7 @@ impl CurlyFormatter {
             specifier: None,
             postfixes: None,
             preflags: None,
-            postflags: None
+            postflags: None,
         }
     }
 }
