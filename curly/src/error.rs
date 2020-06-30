@@ -1,7 +1,9 @@
+use std::error::Error;
 #[derive(Debug)]
 pub enum CurlyErrorKind {
-    Generic(CurlyError),
-    Syntax(CurlyError),
+    Generic(Box<dyn Error>),
+    Syntax(Box<dyn Error>),
+    Internal(Box<dyn Error>),
 }
 
 impl std::fmt::Display for CurlyErrorKind {
@@ -13,6 +15,10 @@ impl std::fmt::Display for CurlyErrorKind {
             }
             CurlyErrorKind::Syntax(e) => {
                 fmt.write_str("Syntax Error: ")?;
+                e.fmt(fmt)
+            }
+            CurlyErrorKind::Internal(e) => {
+                fmt.write_str("Internal Error: ")?;
                 e.fmt(fmt)
             }
         }
@@ -33,7 +39,11 @@ impl std::fmt::Display for CurlyError {
 impl std::error::Error for CurlyError {}
 
 impl CurlyError {
-    pub fn from(msg: String) -> CurlyError {
+    pub fn from(msg: String) -> Self {
         CurlyError { msg }
+    }
+
+    pub fn from_boxed(msg: String) -> Box<Self> {
+        Box::new(CurlyError { msg })
     }
 }

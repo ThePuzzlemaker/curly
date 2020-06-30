@@ -9,7 +9,6 @@ use syn::Fields;
 #[proc_macro_derive(Provider)]
 pub fn provider_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
-
     impl_provider(&ast)
 }
 
@@ -27,23 +26,13 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
             for field in fields.named.iter() {
                 if let Some(field_name) = &field.ident {
                     let quoted = quote! {
-                        stringify!(#field_name) => self.#field_name.curly_format(formatter)?.curly_post(formatter),
+                        stringify!(#field_name) => self.#field_name.curly_format(formatter)?,
                     };
                     matches.extend(quoted);
                 }
             }
         } else if let Fields::Unnamed(_fields) = struct_fields {
-            // This code is currently commented out, as unnamed fields are a giant headache when doing curly formatting,
-            // as they may not make general sense.
-            // Please use named fields.
-            /*for (raw_index, _field) in fields.unnamed.iter().enumerate() {
-                let index = syn::Index::from(raw_index);
-                let quoted = quote! {
-                    stringify!(#index) => self.#index.curly_format(formatter).post_format(formatter),
-                };
-                matches.extend(quoted);
-            }*/
-            panic!("Sorry, as of now, Provider derivation does not work on tuple-style structs.")
+            panic!("Sorry, Provider derivation does not work on tuple-style structs.")
         }
         let span = proc_macro2::Span::call_site();
         let modname =
@@ -65,7 +54,7 @@ fn impl_provider(ast: &syn::DeriveInput) -> TokenStream {
 
         };
     } else {
-        panic!("Sorry, as of now, Provider derivation only works on structs");
+        panic!("Sorry, Provider derivation only works on structs");
     }
     gen.into()
 }
