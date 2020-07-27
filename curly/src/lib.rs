@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 pub mod error;
 pub mod formatters;
 pub mod formatting;

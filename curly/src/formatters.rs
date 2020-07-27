@@ -84,7 +84,7 @@ impl CurlyFmt for str {
 }
 
 impl<'a> CurlyFmt for &'a str {
-    fn curly_fmt(&self, context: &CurlyContext) -> CurlyFmtResult {
+    fn curly_fmt(&self, _context: &CurlyContext) -> CurlyFmtResult {
         Ok(self.to_string())
     }
 }

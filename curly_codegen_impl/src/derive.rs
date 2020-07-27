@@ -4,7 +4,9 @@ use syn::DeriveInput;
 
 use syn::{Data, Field, Fields, Ident, Lit, Meta};
 
-pub fn implement_provider(input: DeriveInput) -> TokenStream {
+use super::util::StringParser;
+
+pub fn provider(input: DeriveInput) -> TokenStream {
     let generated;
 
     let span = Span::call_site();
@@ -50,7 +52,7 @@ pub fn implement_provider(input: DeriveInput) -> TokenStream {
             unreachable!();
         }
 
-        if !should_implement(&field) {
+        if !should_provide(&field) {
             continue;
         }
 
@@ -90,7 +92,7 @@ pub fn implement_provider(input: DeriveInput) -> TokenStream {
     generated
 }
 
-fn should_implement(field: &Field) -> bool {
+fn should_provide(field: &Field) -> bool {
     if let Some(ident) = &field.ident {
         if ident.to_string().starts_with('_') {
             return false;
@@ -131,7 +133,7 @@ fn get_provided_name(field: &Field) -> Option<String> {
             }
 
             if let Lit::Str(lit) = meta.lit {
-                return lit.parse_with(StringParser {}).ok();
+                return lit.parse_with(StringParser::new()).ok();
             } else {
                 panic!("Invalid literal for `#[curly_rename]`, must be a UTF-8 string literal");
             }
@@ -139,13 +141,4 @@ fn get_provided_name(field: &Field) -> Option<String> {
     }
 
     None
-}
-
-struct StringParser {}
-impl syn::parse::Parser for StringParser {
-    type Output = String;
-
-    fn parse2(self, tokens: TokenStream) -> syn::Result<Self::Output> {
-        Ok(tokens.to_string())
-    }
 }

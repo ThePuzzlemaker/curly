@@ -56,9 +56,9 @@ impl CurlyContext {
     ///
     /// This function does not validate input YET, as that is done by // TODO: input parsing
     pub fn from_segment(
-        format_segment: &str,
-        base_row: usize,
-        base_col: usize,
+        _format_segment: &str,
+        _base_row: usize,
+        _base_col: usize,
     ) -> CurlyResult<Self> {
         Ok(Self::default())
     }
