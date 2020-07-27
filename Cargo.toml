@@ -3,5 +3,7 @@
 members = [
   "testing",
   "curly",
-  "curly_derive"
+  "curly_derive",
+  "curly_codegen",
+  "curly_codegen_impl"
 ]

@@ -1,4 +1,3 @@
-
 use crate::minimum::*;
 
 use std::fmt::Debug;
@@ -69,5 +68,23 @@ impl<T: Debug> CurlyDebug for T {
                 };
             }
         }
+    }
+}
+
+impl CurlyFmt for String {
+    fn curly_fmt(&self, _context: &CurlyContext) -> CurlyFmtResult {
+        Ok(self.clone())
+    }
+}
+
+impl CurlyFmt for str {
+    fn curly_fmt(&self, _context: &CurlyContext) -> CurlyFmtResult {
+        Ok(self.to_string())
+    }
+}
+
+impl<'a> CurlyFmt for &'a str {
+    fn curly_fmt(&self, context: &CurlyContext) -> CurlyFmtResult {
+        Ok(self.to_string())
     }
 }

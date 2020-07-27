@@ -18,7 +18,8 @@ macro_rules! curly_unreachable {
 #[macro_export]
 macro_rules! curly {
     ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:expr), *, ..$delegate_provider:ident: $delegate_type:ty) => {{
-        use $crate::formatting::CurlyFormattable;
+        use $crate::formatting::CurlyFmt;
+        use $crate::CurlyFmtResult;
         struct CurlyArgumentsInternal {
             $(
                 $argument_name: $argument_type,
@@ -26,10 +27,10 @@ macro_rules! curly {
             delegate_provider: $delegate_type
         }
         impl $crate::Provider for CurlyArgumentsInternal {
-            fn provide (&self, context: &$crate::formatting::CurlyContext, key: &str) -> Result<::std::string::String, $crate::CurlyErrorKind> {
+            fn provide (&self, context: &$crate::formatting::CurlyContext, key: &str) -> CurlyFmtResult {
                 match key {
                     $(
-                        stringify!($argument_name) => self.$argument_name.curly_format(context)?,
+                        stringify!($argument_name) => self.$argument_name.curly_fmt(context),
                     )*
                     _ => self.delegate_provider.provide(context, key)
                 }
@@ -43,7 +44,8 @@ macro_rules! curly {
         };
     }};
     ($format_string:expr, $($argument_name:ident: $argument_type:ty = $argument_value:expr), *,) => {{
-        use $crate::formatting::CurlyFormattable;
+        use $crate::formatting::CurlyFmt;
+        use $crate::CurlyFmtResult;
         struct CurlyArgumentsInternal {
             $(
                 $argument_name: $argument_type,
@@ -52,12 +54,12 @@ macro_rules! curly {
         impl $crate::Provider for CurlyArgumentsInternal {
             fn provide (&self,
                         context: &$crate::formatting::CurlyContext,
-                        key: &str) -> Result<::std::string::String, $crate::CurlyErrorKind> {
+                        key: &str) -> CurlyFmtResult {
                 match key {
                     $(
-                        stringify!($argument_name) => self.$argument_name.curly_format(context)?,
+                        stringify!($argument_name) => self.$argument_name.curly_fmt(context),
                     )*
-                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from(format!("Invalid specifier '{}'", key))))
+                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from_boxed(format!("Invalid specifier '{}'", key))))
                 }
             }
         }

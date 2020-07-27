@@ -1,11 +1,21 @@
-use curly::minimum::*;
+// #[macro_use]
+extern crate curly;
 
-#[derive(Debug)]
-struct Abc {
-    a: u32,
+#[macro_use]
+extern crate curly_derive;
+
+#[derive(Debug, Provider)]
+struct SomeStruct {
+    value1: String,
+
+    #[curly_ignore]
+    internal_value_2: String,
+
+    #[curly_rename = "something_shorter"]
+    rename_this_really_long_name_to_be_something_shorter: String,
+
+    _automatically_ignored: String,
 }
-
-impl CurlyDebug for Abc {}
 
 fn main() {
     println!("Hello, world!");

@@ -1,0 +1,11 @@
+[package]
+name = "curly_codegen"
+version = "0.0.0"
+authors = ["ThePuzzlemaker <tpzker@thepuzzlemaker.info>"]
+edition = "2018"
+description = "This crate name is being held until it is used."
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
