@@ -6,6 +6,7 @@ use syn::{Data, Field, Fields, Ident, Lit, Meta};
 
 use super::util::StringParser;
 
+/// Derive a Provider
 pub fn provider(input: DeriveInput) -> TokenStream {
     let generated;
 
@@ -68,7 +69,7 @@ pub fn provider(input: DeriveInput) -> TokenStream {
     }
 
     generated = quote! {
-        mod #module_name {
+        #[doc(hidden)] mod #module_name {
             extern crate #crate_ident as curly;
 
             use curly::formatting::CurlyFmt;
@@ -252,7 +253,7 @@ mod tests {
         let found = provider(input).to_string();
 
         let expected = quote! {
-            mod __curly_internal_provider_implement_for_TestDerive {
+            #[doc(hidden)] mod __curly_internal_provider_implement_for_TestDerive {
                 extern crate curly as curly;
 
                 use curly::formatting::CurlyFmt;
@@ -292,7 +293,7 @@ mod tests {
         let found = provider(input).to_string();
 
         let expected = quote! {
-            mod __curly_internal_provider_implement_for_TestDerive {
+            #[doc(hidden)] mod __curly_internal_provider_implement_for_TestDerive {
                 extern crate curly as curly;
 
                 use curly::formatting::CurlyFmt;
@@ -335,7 +336,7 @@ mod tests {
         let found = provider(input).to_string();
 
         let expected = quote! {
-            mod __curly_internal_provider_implement_for_TestDerive {
+            #[doc(hidden)] mod __curly_internal_provider_implement_for_TestDerive {
                 extern crate curly as curly;
 
                 use curly::formatting::CurlyFmt;
@@ -375,7 +376,7 @@ mod tests {
         let found = provider(input).to_string();
 
         let expected = quote! {
-            mod __curly_internal_provider_implement_for_TestDerive {
+            #[doc(hidden)] mod __curly_internal_provider_implement_for_TestDerive {
                 extern crate curly as curly;
 
                 use curly::formatting::CurlyFmt;
@@ -414,7 +415,7 @@ mod tests {
         let found = provider(input).to_string();
 
         let expected = quote! {
-            mod __curly_internal_provider_implement_for_TestDerive {
+            #[doc(hidden)] mod __curly_internal_provider_implement_for_TestDerive {
                 extern crate curly as curly;
 
                 use curly::formatting::CurlyFmt;
