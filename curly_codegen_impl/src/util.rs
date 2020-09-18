@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-/// Parses a TokenStream into a String.
+/// Parses a `TokenStream` into a String.
 ///
 /// This is useful for literals like `syn::Lit::Str(Str)`, where
 /// `Str::parse_with` or similar methods are used to parse a

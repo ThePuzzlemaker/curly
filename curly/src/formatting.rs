@@ -1,13 +1,13 @@
-use super::*;
-use std::fmt::{Alignment, Debug};
-#[derive(Debug)]
+use super::prelude::*;
+use std::fmt::Debug;
+#[derive(Debug, Eq, PartialEq, Clone, Hash, Default)]
 pub struct CurlyContext {
-    pub(crate) custom_flags: Option<String>,
-    pub(crate) flags: CurlyFlags,
-    pub(crate) specifier: Option<String>,
+    pub custom_flags: Option<String>,
+    pub flags: CurlyFlags,
+    pub specifier: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 pub enum NumberType {
     Octal,
     LowerHex,
@@ -19,39 +19,32 @@ pub enum NumberType {
     Normal,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
+pub enum Sign {
+    Plus,
+    Minus,
+}
+
+#[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
+pub enum Alignment {
+    Left,
+    Right,
+    Center,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct CurlyFlags {
     pub fill: char,
     pub align: Option<Alignment>,
     pub width: Option<usize>,
     pub precision: Option<usize>,
-    pub sign_plus: bool,
-    pub sign_minus: bool,
+    pub sign: Option<Sign>,
     pub sign_aware_zero_pad: bool,
     pub alternate: bool,
-    pub debug: bool,
     pub number_type: NumberType,
 }
 
 impl CurlyContext {
-    pub fn specifier(&self) -> Option<&str> {
-        match &self.specifier {
-            Some(specifier) => Some(&specifier),
-            None => None,
-        }
-    }
-
-    pub fn custom_flags(&self) -> Option<&str> {
-        match &self.custom_flags {
-            Some(custom_flags) => Some(&custom_flags),
-            None => None,
-        }
-    }
-
-    pub fn flags(&self) -> &CurlyFlags {
-        &self.flags
-    }
-
     /// Generate a `CurlyContext` from a single format segment (one statement between `{}`s)
     ///
     /// This function does not validate input YET, as that is done by // TODO: input parsing
@@ -64,16 +57,6 @@ impl CurlyContext {
     }
 }
 
-impl Default for CurlyContext {
-    fn default() -> Self {
-        Self {
-            specifier: None,
-            flags: CurlyFlags::default(),
-            custom_flags: None,
-        }
-    }
-}
-
 impl Default for CurlyFlags {
     fn default() -> Self {
         Self {
@@ -81,24 +64,14 @@ impl Default for CurlyFlags {
             align: None,
             width: None,
             precision: None,
-            sign_plus: false,
-            sign_minus: false,
+            sign: None,
             sign_aware_zero_pad: false,
             alternate: false,
-            debug: false,
             number_type: NumberType::Normal,
         }
     }
 }
 
-pub trait Curly {
-    fn curly(&self, context: &CurlyContext) -> CurlyFmtResult;
-}
-
 pub trait CurlyFmt {
     fn curly_fmt(&self, context: &CurlyContext) -> CurlyFmtResult;
-}
-
-pub trait CurlyDebug {
-    fn curly_debug(&self, context: &CurlyContext) -> CurlyFmtResult;
 }

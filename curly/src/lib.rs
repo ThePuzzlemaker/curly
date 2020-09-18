@@ -1,11 +1,12 @@
 #![warn(clippy::pedantic)]
+#![allow(clippy::must_use_candidate)]
 
-pub mod error;
+pub mod errors;
 pub mod formatters;
 pub mod formatting;
 pub mod parsing;
 
-pub use error::*;
+pub use errors::*;
 
 #[macro_export]
 macro_rules! curly_unreachable {
@@ -83,18 +84,9 @@ pub trait Provider {
 pub type CurlyResult<T> = Result<T, CurlyErrorKind>;
 pub type CurlyFmtResult = CurlyResult<String>;
 
-// Minimum + all implementations for primitives and std types according to
-// their code and/or documentations
 pub mod prelude {
 
-    pub use crate::minimum::*;
-}
-
-// The minimum required to get curly working, not including any
-// CurlyFmt implementations for primitives and std types
-pub mod minimum {
-
-    pub use crate::error::*;
+    pub use crate::errors::*;
     pub use crate::formatting::*;
     pub use crate::{CurlyFmtResult, CurlyResult};
 }

@@ -1,4 +1,5 @@
 #![warn(clippy::pedantic)]
+#![allow(clippy::must_use_candidate)]
 extern crate proc_macro;
 
 use proc_macro::TokenStream;

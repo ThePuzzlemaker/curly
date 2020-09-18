@@ -25,7 +25,7 @@ impl std::fmt::Display for CurlyErrorKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash, Default)]
 pub struct CurlyError {
     msg: String,
 }
@@ -39,11 +39,13 @@ impl std::fmt::Display for CurlyError {
 impl std::error::Error for CurlyError {}
 
 impl CurlyError {
-    pub fn from(msg: String) -> Self {
-        CurlyError { msg }
-    }
-
     pub fn from_boxed(msg: String) -> Box<Self> {
-        Box::new(CurlyError { msg })
+        Box::new(Self { msg })
+    }
+}
+
+impl From<String> for CurlyError {
+    fn from(msg: String) -> Self {
+        Self { msg }
     }
 }

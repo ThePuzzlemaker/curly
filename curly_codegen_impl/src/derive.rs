@@ -15,7 +15,7 @@ pub fn provider(input: DeriveInput) -> TokenStream {
     let struct_data;
     let struct_name = input.ident;
 
-    let crate_name = proc_macro_crate::crate_name("curly").unwrap_or("curly".to_string());
+    let crate_name = proc_macro_crate::crate_name("curly").unwrap_or_else(|_| "curly".to_string());
     let crate_ident = Ident::new(&crate_name, span);
 
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
@@ -44,7 +44,7 @@ pub fn provider(input: DeriveInput) -> TokenStream {
 
     let mut matches = quote! {};
 
-    if struct_fields_named.named.len() == 0 {
+    if struct_fields_named.named.is_empty() {
         panic!("Deriving a provider on a struct with no fields does nothing");
     }
 
@@ -60,7 +60,7 @@ pub fn provider(input: DeriveInput) -> TokenStream {
             continue;
         }
 
-        let field_name = get_provided_name(&field).unwrap_or(field_ident.to_string());
+        let field_name = get_provided_name(&field).unwrap_or_else(|| field_ident.to_string());
 
         let quoted = quote! {
             #field_name => self.#field_ident.curly_fmt(context),
@@ -108,15 +108,10 @@ fn should_provide(field: &Field) -> bool {
     }
 
     for attr in &field.attrs {
-        let meta;
-        if let Ok(meta_) = attr.parse_meta() {
-            meta = meta_;
-        } else {
-            continue;
-        }
-
-        if let Meta::Path(path) = meta {
-            return !path.is_ident(&Ident::new("curly_ignore", Span::call_site()));
+        if let Ok(meta) = attr.parse_meta() {
+            if let Meta::Path(path) = meta {
+                return !path.is_ident(&Ident::new("curly_ignore", Span::call_site()));
+            }
         }
     }
 
@@ -127,25 +122,20 @@ fn should_provide(field: &Field) -> bool {
 /// `#[curly_rename = "new_name"]` is specified.
 fn get_provided_name(field: &Field) -> Option<String> {
     for attr in &field.attrs {
-        let meta;
-        if let Ok(meta_) = attr.parse_meta() {
-            meta = meta_;
-        } else {
-            continue;
-        }
+        if let Ok(meta) = attr.parse_meta() {
+            if let Meta::NameValue(meta) = meta {
+                if !meta
+                    .path
+                    .is_ident(&Ident::new("curly_rename", Span::call_site()))
+                {
+                    continue;
+                }
 
-        if let Meta::NameValue(meta) = meta {
-            if !meta
-                .path
-                .is_ident(&Ident::new("curly_rename", Span::call_site()))
-            {
-                continue;
-            }
-
-            if let Lit::Str(lit) = meta.lit {
-                return lit.parse_with(StringParser::new()).ok();
-            } else {
-                panic!("Invalid literal for `#[curly_rename]`, must be a UTF-8 string literal");
+                if let Lit::Str(lit) = meta.lit {
+                    return lit.parse_with(StringParser::new()).ok();
+                } else {
+                    panic!("Invalid literal for `#[curly_rename]`, must be a UTF-8 string literal");
+                }
             }
         }
     }
