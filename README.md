@@ -28,9 +28,7 @@ struct SomeStruct {
     #[curly_rename = "meaning_of_life"]
     the_meaning_of_life_the_universe_and_everything: u8,
 
-    // This doesn't make sense in this context but it would
-    // if you actually needed a marker here. If you did,
-    // it would be automatically ignored.
+    // This value is automatically ignored. Evenutally, I'll add something like `#[curly_include]` that automatically unignores it.
     _something: u32,
 }
 
