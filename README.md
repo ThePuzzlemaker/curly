@@ -1,6 +1,6 @@
 # Curly
 
-Type-safe runtime text formatting for humans.
+Type-safe runtime text formatting for humans (and Rustaceans).
 
 > ## NOTICE
 > 
