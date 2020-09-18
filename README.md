@@ -11,7 +11,6 @@ Type-safe runtime text formatting for humans.
 I haven't really seen many formatting libraries for Rust that aren't really HTML-centric. I was working on a project where I needed user-defined formatting at runtime, so I started this project. It eventually evolved to basically being a runtime text formatting library with similar (or sometimes equivalent) syntax to Rust's `format!` family of macros.
 
 ## Usage (currently doesn't actually work)
-Some of the macros used in this example don't exist yet, i.e. `curly_println!`.
 
 ```rust
 // With `#[cfg(feature = "derive")]`, we get the `Provider` derive macro
@@ -45,11 +44,13 @@ fn main() {
     // Just imagine this is obtained from user input.
     let format_string = "{message} The meaning of life, the universe, and everything is {meaning_of_life}. {goodbye}";
 
-    // Output: "Hello, world! The meaning of life, the universe, and everything is 42. Goodbye! Thanks for reading this!"
-    curly_println!(
-        format_string,
-        goodbye: String = goodbye,
-        ..some_struct: SomeStruct
+    assert_eq!(
+        curly!(
+            format_string,
+            goodbye: String = goodbye,
+            ..some_struct: SomeStruct
+        ),
+        "Hello, world! The meaning of life, the universe, and everything is 42. Goodbye! Thanks for reading this!"
     );
 }
 ```
