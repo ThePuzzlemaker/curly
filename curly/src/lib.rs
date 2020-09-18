@@ -8,6 +8,16 @@ pub mod parsing;
 
 pub use errors::*;
 
+/// Re-export Provider derivation with `#[cfg(feature = "derive")]`
+#[cfg(feature = "derive")]
+#[allow(unused_imports)]
+#[macro_use]
+extern crate curly_derive;
+
+#[cfg(feature = "derive")]
+#[doc(hidden)]
+pub use curly_derive::*;
+
 #[macro_export]
 macro_rules! curly_unreachable {
     () => {

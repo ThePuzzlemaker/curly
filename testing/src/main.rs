@@ -1,9 +1,6 @@
 #![warn(clippy::pedantic)]
-// #[macro_use]
-extern crate curly;
-
 #[macro_use]
-extern crate curly_derive;
+extern crate curly;
 
 #[derive(Debug, Provider)]
 struct SomeStruct {
