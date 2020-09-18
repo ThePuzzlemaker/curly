@@ -13,7 +13,7 @@ I haven't really seen many formatting libraries for Rust that aren't really HTML
 ## Usage (currently doesn't actually work)
 Some of the macros used in this example don't exist yet, i.e. `curly_println!`.
 
-```rs
+```rust
 // With `#[cfg(feature = "derive")]`, we get the `Provider` derive
 // macro
 #[macro_use]
