@@ -14,8 +14,7 @@ I haven't really seen many formatting libraries for Rust that aren't really HTML
 Some of the macros used in this example don't exist yet, i.e. `curly_println!`.
 
 ```rust
-// With `#[cfg(feature = "derive")]`, we get the `Provider` derive
-// macro
+// With `#[cfg(feature = "derive")]`, we get the `Provider` derive macro
 #[macro_use]
 extern crate curly;
 
