@@ -83,7 +83,7 @@ pub fn provider(input: DeriveInput) -> TokenStream {
                         _ => ::std::result::Result::Err(
                             curly::CurlyErrorKind::Generic(
                                 curly::CurlyError::from_boxed(
-                                    format!("Invalid format specifier `{}`", key)
+                                    format!("Invalid format specifier `{}`.", key)
                                 )
                             )
                         )

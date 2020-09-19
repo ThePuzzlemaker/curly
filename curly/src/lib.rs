@@ -18,13 +18,15 @@ extern crate curly_derive;
 #[doc(hidden)]
 pub use curly_derive::*;
 
-#[macro_export]
-macro_rules! curly_unreachable {
-    () => {
-        Err(CurlyErrorKind::Internal(CurlyError::from_boxed(
-            "Unreachable!".to_string(),
-        )))
-    };
+mod internal_macros {
+    #[macro_export]
+    macro_rules! curly_unreachable {
+        () => {
+            Err(CurlyErrorKind::Internal(CurlyError::from_boxed(
+                "Unreachable!".to_string(),
+            )))
+        };
+    }
 }
 
 // TODO: actual formatting
@@ -72,7 +74,7 @@ macro_rules! curly {
                     $(
                         stringify!($argument_name) => self.$argument_name.curly_fmt(context),
                     )*
-                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from_boxed(format!("Invalid specifier '{}'", key))))
+                    _ => ::std::result::Result::Err($crate::CurlyErrorKind::Generic($crate::CurlyError::from_boxed(format!("Invalid format specifier `{}`.", key))))
                 }
             }
         }
@@ -87,13 +89,29 @@ macro_rules! curly {
     }}
 }
 
+/// A trait that allows implementing structs to provide formatted objects to print.
 pub trait Provider {
+    /// Provide the formatted result of object `key` in this struct with formatting context `context`.
+    ///
+    /// When possible, please use [`curly_derive`](curly_derive) (or the `derive` feature) to do this for you.
+    /// Otherwise, code breaks and gets all messy.
+    ///
+    /// # Errors
+    ///
+    /// Type [`CurlyErrorKind::Generic`](errors::CurlyErrorKind::Generic), Message: ``Invalid format specifier: `<KEY>`.``:
+    /// Key `<KEY>` was not found within this struct.
+    ///
+    /// All other errors are from formatting objects within this struct.
     fn provide(&self, context: &formatting::CurlyContext, key: &str) -> CurlyFmtResult;
 }
 
+/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](curly::errors::CurlyErrorKind), genericized over `T`
 pub type CurlyResult<T> = Result<T, CurlyErrorKind>;
+/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](curly::errors::CurlyErrorKind), and [`T=String`](curly::errors::CurlyErrorKind),
+/// intended for use with formatting (hence the name).
 pub type CurlyFmtResult = CurlyResult<String>;
 
+/// Required modules and imports for Curly.
 pub mod prelude {
 
     pub use crate::errors::*;
