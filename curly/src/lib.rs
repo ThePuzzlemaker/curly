@@ -105,9 +105,9 @@ pub trait Provider {
     fn provide(&self, context: &formatting::CurlyContext, key: &str) -> CurlyFmtResult;
 }
 
-/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](curly::errors::CurlyErrorKind), genericized over `T`
+/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](errors::CurlyErrorKind), genericized over `T`
 pub type CurlyResult<T> = Result<T, CurlyErrorKind>;
-/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](curly::errors::CurlyErrorKind), and [`T=String`](curly::errors::CurlyErrorKind),
+/// A [`Result<T, E>`](std::result::Result) with [`E=CurlyErrorKind`](errors::CurlyErrorKind), and [`T=String`](errors::CurlyErrorKind),
 /// intended for use with formatting (hence the name).
 pub type CurlyFmtResult = CurlyResult<String>;
 
