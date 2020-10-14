@@ -4,8 +4,6 @@ use syn::DeriveInput;
 
 use syn::{Data, Field, Fields, Ident, Lit, Meta};
 
-use super::util::StringParser;
-
 /// Derive a Provider
 pub fn provider(input: DeriveInput) -> TokenStream {
     let generated;
@@ -132,7 +130,7 @@ fn get_provided_name(field: &Field) -> Option<String> {
                 }
 
                 if let Lit::Str(lit) = meta.lit {
-                    return lit.parse_with(StringParser::new()).ok();
+                    return Some(lit.value());
                 } else {
                     panic!("Invalid literal for `#[curly_rename]`, must be a UTF-8 string literal");
                 }

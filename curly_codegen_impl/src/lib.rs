@@ -4,6 +4,3 @@
 /// `#[derive(Provider)]` codegen
 #[cfg(feature = "derive")]
 pub mod derive;
-
-/// Codegen utilities
-pub mod util;
