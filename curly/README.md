@@ -1,5 +1,12 @@
 # Curly
 
+> :warning: WARNING :warning:
+>
+> This project is not currently being maintaned as many alternatives already
+> exist such as [`strfmt`](https://crates.io/crates/strfmt) and
+> [`runtime-fmt`](https://crates.io/crates/runtime-fmt)
+
+
 Type-safe runtime text formatting for humans (and Rustaceans).
 
 > ## NOTICE
